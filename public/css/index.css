@@ -1,0 +1,142 @@
+* {
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#wrapper {
+    position:relative;
+    width:100vw;
+}
+
+#top-header {
+    height:4em;
+    top:0;
+    right:0;
+}
+
+#top-header a {
+    text-decoration:none;
+}
+
+#top-header a:any-link {
+    color:black;
+}
+
+.siteName {
+    font-size:3em;
+    left:1em;
+    top:0.5em;
+    text-decoration:none;
+    color:black;
+}
+
+#tools {
+    position:absolute;
+    right:1em;
+    top:1em;
+    text-decoration:none;
+}
+
+nav ul {
+    background-color:black;
+    color:white;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+    align-items:center;
+    height:4em;
+    list-style-type:none;
+}
+nav ul li{
+    font-size:2em;
+}
+
+#infocontainer {
+    background-image:url(../images/vehicles/delorean.jpg);
+    background-repeat:no-repeat;
+    background-position:center;
+    height:300px;
+}
+
+#infocontainer ul {
+    width:13.5em;
+    height:12em;
+    background-color: rgba(200,200,200,0.35);
+    list-style-type:none;
+    color:rgb(12, 117, 150);
+}
+
+#infoheader {
+    font-weight:bolder;
+}
+
+#own {
+    position:absolute;
+    left:1em;
+    height:auto;
+    max-width:100%;
+}
+
+#reviews {
+    display:block;
+    margin:auto;
+    width:70%;
+}
+
+#reviews li{
+    padding-top:1em;
+}
+
+#reviewheader {
+    list-style-type:none;
+}
+
+#upgradecontainer {
+    display:block;
+    margin:auto;
+    width:60%;
+}
+
+#upgrades {
+    display:grid;
+    gap:1em;
+    grid-template-columns:auto auto;
+    justify-content:left;
+}
+
+#upgrades div .image {
+    border-style:solid;
+    background-color:rgb(12, 117, 150);
+    width:10em;
+    height: 6em;
+}
+#upgrades img {
+    display:block;
+    margin:auto;
+    padding-top:.5em;
+}
+
+.link {
+    text-align:center;
+}
+
+@media screen and (min-width:600px) {
+    #wrapper {
+        display:block;
+        margin:auto;
+        border-style:solid;
+        border-color:rgb(12, 117, 150);
+        background-color:white;
+        width:80vw;
+    }
+
+    body{
+        background-image:url(../images/site/small_check.jpg);
+    }
+    #reviewsupgrades {
+        display:flex;
+    }
+    #reviews {
+        order:2;
+    }
+
+}
