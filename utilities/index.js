@@ -24,14 +24,12 @@ Util.getNav = async function (req, res, next) {
   return list
 }
 
-module.exports = Util
-
 /* **************************************
 * Build the classification view HTML
 * ************************************ */
 Util.buildClassificationGrid = async function(data){
   let grid
-  if(data.length > 0){
+  if(data.length > 0) {
     grid = '<ul id="inv-display">'
     data.forEach(vehicle => { 
       grid += '<li>'
@@ -58,3 +56,34 @@ Util.buildClassificationGrid = async function(data){
   }
   return grid
 }
+
+/* **************************************
+* Build the detail view HTML
+* ************************************ */
+Util.buildDetailGrid = async function(data){
+  let pagedata
+  if(data.length == 1){
+    pagedata = '<div id="detailcontent">'
+    pagedata += '<div id="imgcontainer"><img src=' + data[0].inv_image + ' alt="' + data[0].inv_year + ' ' + data[0].inv_make + ' ' + data[0].inv_model + '"></div>'
+    pagedata += '<div id="pricecontainer">'
+    pagedata += '<h2>Price: $' + new Intl.NumberFormat('en-US').format(data[0].inv_price) + '</h2>'
+    pagedata += '</div>'
+    pagedata += '<p id="miles" class="pagedata"><b>Mileage:</b> ' + new Intl.NumberFormat('en-US').format(data[0].inv_miles) + '</p>'
+    pagedata += '<p id="color" class="pagedata"><b>Color:</b> ' + data[0].inv_color + '</p>'
+    pagedata += '<p id="description" class="pagedata">' + data[0].inv_description + '</p>'
+    pagedata += '</div>'
+
+    return pagedata
+  } else {
+    pagedata = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+  }
+}
+
+/* ****************************************
+ * Middleware For Handling Errors
+ * Wrap other function in this for 
+ * General Error Handling
+ **************************************** */
+Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+module.exports = Util

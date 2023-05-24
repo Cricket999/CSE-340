@@ -46,6 +46,15 @@ nav ul {
     height:4em;
     list-style-type:none;
 }
+
+nav ul a:link {
+    color:white;
+}
+
+nav ul a:visited {
+    color:white;
+}
+
 nav ul li{
     font-size:2em;
 }
@@ -119,7 +128,29 @@ nav ul li{
     text-align:center;
 }
 
-@media screen and (min-width:600px) {
+#detailcontent {
+    display:grid;
+    grid-template-columns: 95vw;
+    grid-template-rows: auto 5em 2em 2em 4em;
+    height:100%;
+}
+
+#imgcontainer {
+    grid-column:1;
+    grid-row:1
+}
+
+#pricecontainer {
+    grid-column:1;
+    grid-row:2;
+    background-color:lightgray;
+}
+
+.pagedata {
+    grid-column: 1;
+}
+
+@media screen and (min-width:900px) {
     #wrapper {
         display:block;
         margin:auto;
@@ -139,4 +170,25 @@ nav ul li{
         order:2;
     }
 
+    #detailcontent {
+        display:grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: 5em 2em 2em 4em;
+        height:70vh;
+    }
+    
+    #imagecontainer {
+        grid-column:1;
+        grid-row:1 / span 4;
+    }
+    
+    #pricecontainer {
+        grid-column:2;
+        grid-row:1;
+        background-color:lightgray;
+    }
+    
+    .pagedata {
+        grid-column: 2;
+    }
 }
