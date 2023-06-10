@@ -79,6 +79,34 @@ Util.buildDetailGrid = async function(data){
   }
 }
 
+/* **************************************
+* Build the add classification view HTML
+* ************************************ */
+Util.buildAddClassification = async function(){
+  let pagedata = `<div id="formholder">
+    <form id="addclassification" action="/inv/add-classification" method="post">
+      <label for="classification_name">Enter a name with no special characters or spaces.</label><br>
+      <input id="classification_name" name="classification_name" type="text" required pattern="[a-zA-Z0-9]*"><br>
+      <input id="submit" type="submit" value="Add Classification"><br>
+    </form>
+  </div>`
+
+  return pagedata
+}
+
+/* **************************************
+* Build the add inventory view HTML
+* ************************************ */
+Util.buildAddInventory = async function(){
+  let data = await invModel.getClassifications()
+  let pagedata = ""
+  data.rows.forEach((row) => {
+    pagedata += `<option value="` + row.classification_id + `">` + row.classification_name + `</option>\n`
+  }) 
+
+  return pagedata
+}
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 

@@ -1,0 +1,42 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else {
+      res.redirect('/')
+    } %>
+
+<%- messages() %>
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+<div id="formholder">
+  <form id="addinventory" action="/inv/add-inventory" method="post">
+    <label for="inv_classification">Classification</label><br>
+    <select id="inv_classification" name="inv_classification" placeholder="Choose a Classification">
+      <%- pagedata %>
+    </select><br>
+    <label for="inv_make">Make</label><br>
+    <input id="inv_make" name="inv_make" type="text" required pattern="[a-zA-Z0-9]*" value="<%= locals.inv_make %>"><br>
+    <label for="inv_model">Model</label><br>
+    <input id="inv_model" name="inv_model" type="text" required pattern="[a-zA-Z0-9]*" value="<%= locals.inv_model %>"><br>
+    <label for="inv_year">4-Digit Year</label><br>
+    <input id="inv_year" name="inv_year" type="text" required pattern="[0-9]{4}" value="<%= locals.inv_year %>"><br>
+    <label for="inv_description">Description</label><br>
+    <input id="inv_description" name="inv_description" type="text" required value="<%= locals.inv_description %>"><br>
+    <label for="inv_image">Image</label><br>
+    <input id="inv_image" name="inv_image" type="text" required value="<%= locals.inv_image %>"><br>
+    <label for="inv_thumbnail">Thumbnail</label><br>
+    <input id="inv_thumbnail" name="inv_thumbnail" type="text" required value="<%= locals.inv_thumbnail %>"><br>
+    <label for="inv_price">Price</label><br>
+    <input id="inv_price" name="inv_price" type="text" required pattern="[0-9]*" value="<%= locals.inv_price %>"><br>
+    <label for="inv_miles">Miles</label><br>
+    <input id="inv_miles" name="inv_miles" type="text" required pattern="[0-9]*" value="<%= locals.inv_miles %>"><br>
+    <label for="inv_color">Color</label><br>
+    <input id="inv_color" name="inv_color" type="text" required pattern="[a-zA-Z]*" value="<%= locals.inv_color %>"><br>
+    <input id="submit" type="submit" value="Add Item"><br>
+  </form>
+</div>
