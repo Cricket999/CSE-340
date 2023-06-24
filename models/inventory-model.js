@@ -67,4 +67,34 @@ async function addInventory(inv_classification, inv_make, inv_model, inv_year, i
         return error.message
       }
 }
-module.exports = {getClassifications, getInventoryByClassificationId, getDetailsById, addClassification, addInventory}
+
+/* ***************************
+ *  Update inventory data
+ * ************************** */
+async function updateInventory(inv_classification, inv_make, inv_model, inv_year, inv_description,
+    inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, inventory_id) {
+    try {
+        const sql = `UPDATE public.inventory SET classification_id = $1, inv_make = $2, inv_model = $3, inv_year = $4, inv_description = $5, inv_image = $6, inv_thumbnail = $7, inv_price = $8, inv_miles = $9, inv_color = $10 WHERE inv_id = $11 RETURNING *`
+        let params = [inv_classification, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, inventory_id]
+        let data = await pool.query(sql, params)
+        return data.rows
+      } catch (error) {
+        return error.message
+      }
+}
+
+/* ***************************
+ *  Update inventory data
+ * ************************** */
+async function deleteInventory(inv_id) {
+    try {
+        const sql = `DELETE FROM inventory WHERE inv_id = $1`;
+        let params = [inv_id]
+        let data = await pool.query(sql, params)
+        return data
+      } catch (error) {
+        return error.message
+      }
+}
+
+module.exports = {getClassifications, getInventoryByClassificationId, getDetailsById, addClassification, addInventory, updateInventory, deleteInventory}

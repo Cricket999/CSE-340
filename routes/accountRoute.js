@@ -20,9 +20,28 @@ router.post(
     "/login",
     regValidate.loginRules(),
     regValidate.checkLoginData,
-    (req, res) => {
-      res.status(200).send('login process')
-    }
+    utilities.handleErrors(accountController.accountLogin)
   )
+
+// Account Management Route
+router.get("", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
+
+// Account Update View Route
+router.get("/update", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountUpdate));
+
+// Account Update Route
+router.post("/updateaccount",
+    regValidate.accUpdateRules(),
+    regValidate.checkAccUpdateData,
+    utilities.handleErrors(accountController.updateAccount));
+
+// Password Update Route
+    router.post("/updatepassword",
+    regValidate.passUpdateRules(),
+    regValidate.checkPassUpdateData,
+    utilities.handleErrors(accountController.updatePassword));
+
+// Logout Route
+    router.get("/logout", utilities.handleErrors(accountController.logout));
 
 module.exports = router;

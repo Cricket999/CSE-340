@@ -14,9 +14,9 @@
 <% } %>
 
 <div id="formholder">
-  <form id="addinventory" action="/inv/add-inventory" method="post">
+  <form id="updateForm" action="/inv/edit-inventory" method="post">
     <label for="inv_classification">Classification</label><br>
-      <%- pagedata %>
+      <%- classificationList %>
     <label for="inv_make">Make</label><br>
     <input id="inv_make" name="inv_make" type="text" required pattern="[a-zA-Z0-9]*" value="<%= locals.inv_make %>"><br>
     <label for="inv_model">Model</label><br>
@@ -35,6 +35,11 @@
     <input id="inv_miles" name="inv_miles" type="text" required pattern="[0-9]*" value="<%= locals.inv_miles %>"><br>
     <label for="inv_color">Color</label><br>
     <input id="inv_color" name="inv_color" type="text" required pattern="[a-zA-Z]*" value="<%= locals.inv_color %>"><br>
-    <input id="submit" type="submit" value="Add Item"><br>
+    <input id="submit" type="submit" value="Edit Item" disabled><br>
+    <input type="hidden" name="inv_id"
+    <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+    <% } %>>
   </form>
 </div>
+
+<script src="/js/inv-update.js"></script>
