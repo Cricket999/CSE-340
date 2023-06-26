@@ -124,7 +124,7 @@ async function accountLogin(req, res) {
    delete accountData.account_password
    const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
    res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
-   return res.redirect("/account/")
+   return res.redirect("/account")
    }
   } catch (error) {
    return new Error('Access Forbidden')
@@ -137,13 +137,19 @@ async function accountLogin(req, res) {
 async function buildAccountUpdate(req, res, next) {
   let tools = res.locals.tools
   let account_id = res.locals.userdata.account_id
+  let account_firstname = res.locals.userdata.account_firstname
+  let account_lastname = res.locals.userdata.account_lastname
+  let account_email = res.locals.userdata.account_email
   let nav = await utilities.getNav()
   res.render("account/update", {
     title: "Update Account Details",
     tools,
     nav,
     errors: null,
-    account_id
+    account_id,
+    account_firstname,
+    account_lastname,
+    account_email
   })
 }
 

@@ -144,9 +144,12 @@ validate.accUpdateRules = () => {
     .normalizeEmail() // refer to validator.js docs
     .withMessage("A valid email is required.")
     .custom(async(account_email) => {
-      const emailExists = await accountModel.checkExistingEmail(account_email)
-      if (emailExists){
-          throw new Error("Email exists. Please use different email")
+      const account = accountModel.getAccountById(body.account_id)
+      if (!account_email == account.account_email) {
+        const emailExists = await accountModel.checkExistingEmail(account_email)
+        if (emailExists){
+            throw new Error("Email exists. Please use different email")
+        }
       }
     }),
   ]
