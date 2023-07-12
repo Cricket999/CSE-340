@@ -196,13 +196,16 @@ Util.buildAccountList = async function(message_to) {
   let acclist = `<label for="message_to">To:</label><br>
     <select name="message_to" id="message_to" required>`
   // Build the list
+  let toadd = ""
   accounts.forEach((account) => {
-    if (message_to == account.account_id) {acclist += `<option id="option_${account.account_id}" selected value="${account.account_id}">
+    if (message_to == account.account_id) {toadd += `<option id="option_${account.account_id}" selected value="${account.account_id}">
     ${account.account_firstname} ${account.account_lastname}</option>`, message_to_chosen = true}
-    else {acclist += `<option id="option_${account.account_id}" value="${account.account_id}">${account.account_firstname} ${account.account_lastname}</option>`}
+    else {toadd += `<option id="option_${account.account_id}" value="${account.account_id}">${account.account_firstname} ${account.account_lastname}</option>`}
   })
   // Build the placeholder option
-  if (!message_to_chosen) {acclist += `<option id="option_-1" disabled selected hidden>Select a recipient</option>`}
+  if (!message_to_chosen) {acclist += `<option id="option_-1" value="" disabled selected hidden>Select a recipient</option>`}
+  // Add the rest of the list
+  acclist += toadd
   acclist += `</select>`
   return acclist
 }
@@ -213,7 +216,7 @@ Util.buildAccountList = async function(message_to) {
 Util.buildReplyRecipient = async function(message_to) {
   let account = await accountModel.getAccountById(message_to)
   let recipient = `<label for="message_to">To:</label><br>
-  <input id="message_to" name="message_to" value="${message_to}" hidden>${account.account_firstname} ${account.account_lastname}</input>`
+  <input id="message_to" name="message_to" value="${message_to}" hidden>${account.account_firstname} ${account.account_lastname}`
   return recipient
 }
 

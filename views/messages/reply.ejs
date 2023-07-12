@@ -16,7 +16,7 @@
 <p>This is an internal system only. Recipients are limited to the three generic accounts.</p>
 <p>All inputs are required.</p>
 <form name="messageform" id="messageform" action="/messages/reply/<%= locals.message_id %>" method="post">
-<input id="message_id" name="message_id" value="<%= locals.message_id %>" hidden></input>
+<input id="message_id" name="message_id" value="<%= locals.message_id %>" hidden>
 <%- locals.recipient %><br>
 <label for="message_subject">Subject:</label><br>
 <input type="text" name="message_subject" id="message_subject" required value="<%= locals.message_subject %>"><br>
