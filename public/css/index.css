@@ -156,6 +156,14 @@ nav ul li{
     border-style:ridge;
 }
 
+#message_list {
+    display:block;
+}
+
+footer {
+    display:block;
+}
+
 @media screen and (min-width:900px) {
     #wrapper {
         display:block;

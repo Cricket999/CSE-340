@@ -1,4 +1,6 @@
 const invModel = require("../models/inventory-model")
+const messageModel = require("../models/message-model")
+const accountModel = require("../models/account-model")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const Util = {}
@@ -113,13 +115,106 @@ Util.buildAddInventory = async function(){
 /* **************************************
 * Build the user welcome for account management
 * ************************************ */
-Util.buildUserWelcome = async function(accountData){
-  let userWelcome = `<h2>Welcome ${accountData.account_firstname}</h2><p><a href="account/update">Update Account Information</a></p><br>`
+Util.buildUserWelcome = async function(accountData, unreadmessages){
+  let userWelcome = `<h2>Welcome ${accountData.account_firstname}</h2><p><a href="account/update">Update Account Information</a></p><br>
+    <h3>Message Center</h3><ul><li>You have ${unreadmessages}.</li><li>Go to <a href="messages/inbox">Inbox</a></li></ul><br>`
   let accountType = accountData.account_type
   if ((accountType == 'Employee') || (accountType == 'Admin')) {
     userWelcome += `<h3>Inventory Management</h3><p><a href="/inv/">Inventory Management</a></p>`
   }
   return userWelcome
+}
+
+/* **************************************
+* Build the inbox view message list
+* ************************************ */
+Util.buildMessageList = async function(data){
+  let messagelist = `<table id="message_list">
+    <tr>
+      <th>Received</th>
+      <th>Subject</th>
+      <th>From</th>
+      <th>Read</th>
+    </tr>`
+    data.forEach(message => {
+      let created = new Date(message.message_created).toLocaleString()
+      let from = `${message.account_firstname} ${message.account_lastname}`
+
+      messagelist += '<tr>'
+      messagelist += `<td>${created}</td>`
+      messagelist += `<td><a href="read/${message.message_id}">${message.message_subject}</a></td>`
+      messagelist += `<td>${from}</td>`
+      messagelist += `<td>${message.message_read}</td>`
+      messagelist += '</tr>'
+    })
+    messagelist += '</table>'
+  return messagelist
+}
+
+/* **************************************
+* Build a message from the messaging system
+* ************************************ */
+Util.buildReadMessage = async function(data) {
+  pagedata = `<b>Subject:</b> ${data.message_subject}<br>
+  <b>From:</b> ${data.account_firstname} ${data.account_lastname}<br>
+  <b>Message:</b><br>${data.message_body}
+  <hr>
+  <form id="messageid">
+  <input type="hidden" id="message_id" name="message_id" value="${data.message_id}">`
+  // Build return link
+  if (data.message_archived) {
+    pagedata += `<a href="../archive">Return to Archive</a><br>`
+  } else {
+    pagedata += `<a href="../inbox">Return to Inbox</a><br>`
+  }
+  // Build reply button
+  pagedata += `<a id="reply" href="/messages/reply/${data.message_id}">Reply</a><br>`
+  // Build read and unread buttons
+  if (data.message_read) {
+    pagedata += `<button id="markunread" type="submit" form="messageid" formaction="/messages/markunread" formmethod="post">Mark as Unread</button>`
+  } else {
+    pagedata += `<button id="markread" type="submit" form="messageid" formaction="/messages/markread" formmethod="post">Mark as Read</button>`
+  } pagedata += `<br>`
+  // Build archive buttons
+  if (data.message_archived) {
+    pagedata += `<button id="unarchive" type="submit" form="messageid" formaction="/messages/unarchive" formmethod="post">Unarchive Message</button>`
+  } else {
+    pagedata += `<button id="archive" type="submit" form="messageid" formaction="/messages/archive" formmethod="post">Archive Message</button>`
+  } pagedata += `<br>`
+  // Build delete button
+  pagedata += `<button id="delete" type="submit" form="messageid" formaction="/messages/delete" formmethod="post">Delete Message</button>`
+  pagedata += `</form>`
+  return pagedata
+}
+
+/* ****************************************
+* Build a list of accounts to send messages to
+**************************************** */
+Util.buildAccountList = async function(message_to) {
+  let accounts = await messageModel.getAccountList()
+  let message_to_chosen = false
+  let acclist = `<label for="message_to">To:</label><br>
+    <select name="message_to" id="message_to" required>`
+  // Build the list
+  accounts.forEach((account) => {
+    if (message_to == account.account_id) {acclist += `<option id="option_${account.account_id}" selected value="${account.account_id}">
+    ${account.account_firstname} ${account.account_lastname}</option>`, message_to_chosen = true}
+    else {acclist += `<option id="option_${account.account_id}" value="${account.account_id}">${account.account_firstname} ${account.account_lastname}</option>`}
+  })
+  // Build the placeholder option
+  if (!message_to_chosen) {acclist += `<option id="option_-1" disabled selected hidden>Select a recipient</option>`}
+  acclist += `</select>`
+  return acclist
+}
+
+/* ****************************************
+* Choose who to send a reply to
+**************************************** */
+Util.buildReplyRecipient = async function(message_to) {
+  let account = await accountModel.getAccountById(message_to)
+  let recipient = `<label for="message_to">To:</label><br>
+  <input id="message_to" name="message_to" value="${message_to}" hidden>${account.account_firstname} ${account.account_lastname}</input>`
+  return recipient
 }
 
 /* ****************************************
@@ -184,6 +279,33 @@ Util.checkLogin = (req, res, next) => {
     return res.redirect("/account/login")
   }
  }
+
+/* ****************************************
+ *  Check message ownership
+ * ************************************ */
+Util.checkOwnerFromParams = async (req, res, next) => {
+  const message_id = req.params.message_id
+  const owner = await messageModel.getOwner(message_id)
+  console.log(res.locals.userdata)
+  if (res.locals.userdata.account_id == owner) {
+    next()
+  } else {
+    req.flash("notice", "Access denied.")
+    return res.redirect("/account")
+  }
+}
+
+Util.checkOwnerFromBody = async (req, res, next) => {
+  const { message_id } = req.body
+  const owner = await messageModel.getOwner(message_id)
+  console.log(res.locals.userdata)
+  if (res.locals.userdata.account_id == owner) {
+    next()
+  } else {
+    req.flash("notice", "Access denied.")
+    return res.redirect("/account")
+  }
+}
 
 /* ****************************************
  * Middleware For Handling Errors

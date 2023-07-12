@@ -1,0 +1,25 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else {
+      res.redirect('/')
+    } %>
+
+<%- messages() %>
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+<p>This is an internal system only. Recipients are limited to the three generic accounts.</p>
+<p>All inputs are required.</p>
+<form name="messageform" id="messageform" action="/messages/reply/<%= message_id %>" method="post">
+<%- locals.recipient %><br>
+<label for="message_subject">Subject:</label><br>
+<input type="text" name="message_subject" id="message_subject" required value="<%= locals.message_subject %>"><br>
+<label for="message_body">Message:</label><br>
+<textarea name="message_body" id="message_body" rows="5" cols="80" required><%= locals.message_body %></textarea><br>
+<input type="submit" value="Send">
+</form>

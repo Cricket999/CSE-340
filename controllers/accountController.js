@@ -1,4 +1,5 @@
 const accountModel = require("../models/account-model")
+const messageModel = require("../models/message-model")
 const utilities = require("../utilities/")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
@@ -36,9 +37,15 @@ async function buildRegister(req, res, next) {
 *  Deliver account management view
 * *************************************** */
 async function buildAccountManagement(req, res, next) {
+  let unreadmessages = await messageModel.getUnreadMessageCount(res.locals.userdata.account_id)
+  if (unreadmessages == 1) {
+    unreadmessages += ' unread message.'
+  } else {
+    unreadmessages += ' unread messages.'
+  }
   let tools = res.locals.tools
   let nav = await utilities.getNav()
-  let userwelcome = await utilities.buildUserWelcome(res.locals.userdata)
+  let userwelcome = await utilities.buildUserWelcome(res.locals.userdata,unreadmessages)
   res.render("account/account-management", {
     title: "Account Management",
     tools,
